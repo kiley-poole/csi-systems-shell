@@ -21,7 +21,7 @@ int main(){
         printf("@ ");
         fgets(cmd, MAXLINE, stdin);
         if (feof(stdin)){
-            printf("\n**SEE YA LATER SUCKER**\n");
+            printf("\n**NULL SWEAT CHUMMER**\n");
             exit(0);
         }
         if((pid = fork()) == 0){
@@ -32,7 +32,7 @@ int main(){
         }
         int status;
         if (waitpid(pid, &status, 0) < 0){
-            fprintf(stderr, "%s: %s\n", "pid fucked", strerror(errno));
+            fprintf(stderr, "%s: %s\n", "pid no good", strerror(errno));
         }
     }
 
