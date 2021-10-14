@@ -27,8 +27,9 @@ int parse_command(char *cmd, struct command commands[MAXARGS]);
 void run_command(struct command commands[MAXARGS], int cmd_count);
 int get_builtin(char *argv);
 void errorP(char *errText);
-void print_logo();
-pid_t Fork();
+pid_t Fork(void);
+void print_logo(void);
+void print_exit(void);
 
 void sigint_handler(int sig){
     return;
@@ -45,7 +46,7 @@ int main(){
             errorP("signal no good");
         fgets(cmd, MAXLINE, stdin);
         if (feof(stdin)){
-            printf("\n**NULL SWEAT, CHUMMER**\n");
+            print_exit();
             exit(0);
         }
         int cmd_count = parse_command(cmd, commands);
@@ -110,6 +111,7 @@ void run_command(struct command commands[MAXARGS], int cmd_count){
      while(i <= cmd_count){
         if(commands[i].argv[0] == NULL ||
             (i > 0 && ( 
+                //this feels dumb should just use a bitset
                 (commands[i].control_or == 1 && failed != commands[i].control_or) || 
                 (commands[i].control_and == 1 && failed == commands[i].control_and)
             ))){
@@ -146,7 +148,7 @@ int get_builtin(char *argv){
         argv[i] = tolower(argv[i]);
     }
     if(strcmp(argv, "quit") == 0 || strcmp(argv, "exit") == 0){
-        printf("\n**NULL SWEAT, CHUMMER**\n");
+        print_exit();
         exit(0);
     }
     if(strcmp(argv, "cowboy") == 0){
@@ -161,15 +163,21 @@ void errorP(char *errText){
     exit(0);
 }
 
-pid_t Fork(){
+pid_t Fork(void){
     pid_t pid;
     if((pid = fork()) < 0)
         errorP("Fork Error");
     return pid;
 }
 
-void print_logo(){
+void print_logo(void){
     printf(GREEN " __   _ _______ _     _  ______  _____  _______ _     _ _______              \n");
     printf(" | \\  | |______ |     | |_____/ |     | |______ |_____| |______ |      |     \n");
     printf(" |  \\_| |______ |_____| |    \\_ |_____| ______| |     | |______ |_____ |_____\n\n");
+}
+
+void print_exit(void){
+    printf(GREEN "\n_  _ _  _ _    _       ____ _ _ _ ____ ____ ___      ____ _  _ _  _ _  _ _  _ ____ ____\n");
+    printf("|\\ | |  | |    |       [__  | | | |___ |__|  |       |    |__| |  | |\\/| |\\/| |___ |__/\n");
+    printf("| \\| |__| |___ |___    ___] |_|_| |___ |  |  |  .    |___ |  | |__| |  | |  | |___ |  \\\n\n");
 }
